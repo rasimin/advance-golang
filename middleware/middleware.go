@@ -8,17 +8,20 @@ import (
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token := c.GetHeader("Authorization")
-
-		// Periksa apakah token disediakan
-		if token == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization token required"})
+		// Verifikasi token (misalnya, cocokkan dengan token yang diharapkan)
+		username, password, ok := c.Request.BasicAuth()
+		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization basic token required"})
 			c.Abort()
 			return
 		}
 
-		// Verifikasi token (misalnya, cocokkan dengan token yang diharapkan)
-		if token != "valid-token" {
+		const (
+			expectedUsername = "user"
+			expectedPassword = "pass"
+		)
+		isValid := (username == expectedUsername) && (password == expectedPassword)
+		if !isValid {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authorization token"})
 			c.Abort()
 			return

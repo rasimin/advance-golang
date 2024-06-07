@@ -2,11 +2,19 @@ package router
 
 import (
 	"advance/handler"
+	"advance/middleware"
 
 	"github.com/gin-gonic/gin"
 )
 
 func SetupRouter(r *gin.Engine) {
-	r.GET("/", handler.RootHandler)
-	r.POST("/post", handler.PostHandler)
+	usersPublicEndpoint := r.Group("/users")
+	usersPublicEndpoint.GET("/:id", handler.GetUser)
+	usersPublicEndpoint.GET("/", handler.GetAllUsers)
+
+	usersPrivateEndpoint := r.Group("/users")
+	usersPrivateEndpoint.Use(middleware.AuthMiddleware())
+	usersPrivateEndpoint.POST("/", handler.CreateUser)
+	usersPrivateEndpoint.PUT("/:id", handler.UpdateUser)
+	usersPrivateEndpoint.DELETE("/:id", handler.DeleteUser)
 }
