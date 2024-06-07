@@ -2,6 +2,10 @@ package handler
 
 import "github.com/gin-gonic/gin"
 
+func GetHelloMessage() string {
+	return "Halo dari Gin!"
+}
+
 func RootHandler(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "Halo dari Gin!",
